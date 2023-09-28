@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Finder</title>
+    <!-- Add any CSS styling links or internal styles here if you want to style the page -->
+</head>
+
+<body>
+
+    <!-- Form to Submit New Findings -->
+    <form id="jobForm">
+        <label for="title">Job Title:</label>
+        <input type="text" id="title" name="title"><br><br>
+
+        <label for="company">Company:</label>
+        <input type="text" id="company" name="company"><br><br>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location"><br><br>
+
+        <label for="skills">Skills Required:</label>
+        <input type="text" id="skills" name="skills"><br><br>
+
+        <label for="date">Date Posted:</label>
+        <input type="date" id="date" name="date"><br><br>
+
+        <label for="link">Link to Job Posting:</label>
+        <input type="url" id="link" name="link"><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <hr> <!-- Optional horizontal line for visual separation -->
+
+    <!-- Display Area for Job Posts -->
+    <div id="jobPosts">
+        <!-- Job posts will be dynamically added here by JavaScript -->
+    </div>
+    <script src="index.js" charset="UTF-8"></script>
+</body>
+
+</html>
