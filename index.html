@@ -1,17 +1,27 @@
+<!--NEW STUFF BELOW-->
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Finder</title>
-    <!-- Add any CSS styling links or internal styles here if you want to style the page -->
+    <title>Job Posts</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Add your styles here. For example: */
+        .modal {
+            display: none; /* Hidden by default */
+            /* Add other necessary styles to position and style the modal. */
+        }
+    </style>
 </head>
 
 <body>
 
-    <!-- Form to Submit New Findings -->
+    <!-- Job Form -->
     <form id="jobForm">
+        <!-- Add all your input fields for the job post form. Example: -->
         <label for="title">Job Title:</label>
         <input type="text" id="title" name="title"><br><br>
 
@@ -20,6 +30,9 @@
 
         <label for="location">Location:</label>
         <input type="text" id="location" name="location"><br><br>
+
+        <label for="description">Job Description:</label>
+        <input type="text" id="description" name="description"><br><br>
 
         <label for="skills">Skills Required:</label>
         <input type="text" id="skills" name="skills"><br><br>
@@ -30,16 +43,40 @@
         <label for="link">Link to Job Posting:</label>
         <input type="url" id="link" name="link"><br><br>
 
+        <input type="hidden" id="editIndex" value="">
+        <!--<button id="contactModalButton" type="button">Add Contact</button>-->
         <input type="submit" value="Submit">
+        
     </form>
 
-    <hr> <!-- Optional horizontal line for visual separation -->
+    <!-- Job Posts Display Area -->
+    <div id="jobPosts"></div>
 
-    <!-- Display Area for Job Posts -->
-    <div id="jobPosts">
-        <!-- Job posts will be dynamically added here by JavaScript -->
+    <!-- Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="contactForm">
+                <label for="contactName">Name:</label>
+                <input type="text" id="contactName" name="contactName">
+
+                <label for="contactEmail">Email:</label>
+                <input type="text" id="contactEmail" name="contactEmail">
+
+                <label for="contactPhone">Phone:</label>
+                <input type="text" id="contactPhone" name="contactPhone">
+
+                <input type="submit" value="Save Contact">
+            </form>
+        </div>
     </div>
+
+    <!-- Button to open the contact modal -->
+    
+
+    <!-- Include your JavaScript files. Assuming they are external. -->
     <script src="index.js" charset="UTF-8"></script>
+
 </body>
 
 </html>
