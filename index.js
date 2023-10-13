@@ -55,11 +55,6 @@ document.addEventListener("DOMContentLoaded", function() {
         modal.style.display = "none"; 
         document.getElementById("contactForm").reset(); 
     });
-    
-    // Show modal when clicking on the Add POC button
-    document.getElementById("contactModalButton").addEventListener("click", function() {
-        modal.style.display = "block";
-    });
 });
 
 function getJobPosts() {
