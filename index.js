@@ -97,40 +97,75 @@ function loadJobPosts() {
         const jobDiv = document.createElement("div");
         jobDiv.classList.add("job-posting");
 
+        let showPOCButton = '';
+        if (job.poc) {
+            showPOCButton = '<button class="show-poc">Show POC</button>';
+        }
+
         jobDiv.innerHTML = `
-            <h2>${job.title} at ${job.company}</h2>
-            <p>Location: ${job.location}</p>
-            <p>Job Description: ${job.description}</p>
-            <p>Skills Required: ${job.skills}</p>
-            <p>Salary: ${job.salary}</p> 
-            <p>Qualification: ${job.qualification}</p> 
-            <p>Date Posted: ${job.date}</p>
-            <p><a href="${job.link}" target="_blank">Link to Job</a></p>
-            <button onclick="editJobPost(${index})">Edit</button>
-            <button onclick="deleteJobPost(${index})">Delete</button>
-            <button class="show-poc">Show POC</button>
-            <div class="poc-details" hidden>
-                <strong>Name:</strong> ${job.poc ? job.poc.name : 'N/A'}<br>
-                <strong>Email:</strong> ${job.poc ? job.poc.email : 'N/A'}<br>
-                <strong>Phone:</strong> ${job.poc ? job.poc.phone : 'N/A'}
+            <div class="job-details">
+                <h2>${job.title} at ${job.company}</h2>
+                <p>Location: ${job.location}</p>
+                <p>Job Description: ${job.description}</p>
+                <p>Skills Required: ${job.skills}</p>
+                <p>Salary: ${job.salary}</p> 
+                <p>Qualification: ${job.qualification}</p> 
+                <p>Date Posted: ${job.date}</p>
+                <p><a href="${job.link}" target="_blank">Link to Job</a></p>
+                <button onclick="editJobPost(${index})">Edit</button>
+                <button onclick="deleteJobPost(${index})">Delete</button>
+                ${showPOCButton}
+                <button class="add-poc">Add POC</button>
+                <div class="poc-details" hidden>
+                    <strong>Name:</strong> ${job.poc ? job.poc.name : 'N/A'}<br>
+                    <strong>Email:</strong> ${job.poc ? job.poc.email : 'N/A'}<br>
+                    <strong>Phone:</strong> ${job.poc ? job.poc.phone : 'N/A'}
+                </div>
+            </div>
+            <div class="resume-section">
+                <strong>Custom Resume:</strong>
+                <textarea class="custom-resume">${job.customResume || ""}</textarea>
+                <button class="save-changes" onclick="saveResume(${index}, this)">Save Resume</button>
+            </div>
+            <div class="coverletter-section">
+                <strong>Cover Letter:</strong>
+                <textarea class="custom-coverletter">${job.customCoverLetter || ""}</textarea>
+                <button class="save-changes" onclick="saveCoverLetter(${index}, this)">Save Cover Letter</button>
             </div>
         `;
 
         jobPostsDiv.appendChild(jobDiv);
 
-        const addPocButton = document.createElement("button");
-        addPocButton.textContent = "Add POC";
-        addPocButton.addEventListener("click", function() {
+        if (job.poc) {
+            jobDiv.querySelector(".show-poc").addEventListener("click", function() {
+                const pocDetails = jobDiv.querySelector(".poc-details");
+                pocDetails.hidden = !pocDetails.hidden;
+            });
+        }
+
+        jobDiv.querySelector(".add-poc").addEventListener("click", function() {
             modal.style.display = "block";
             currentJobIndex = index;
         });
-        jobDiv.appendChild(addPocButton);
-
-        jobDiv.querySelector(".show-poc").addEventListener("click", function() {
-            const pocDetails = this.nextElementSibling;
-            pocDetails.hidden = !pocDetails.hidden;
-        });
     });
+}
+
+
+
+function saveResume(index, btnElement) {
+    const jobPosts = getJobPosts();
+    const textarea = btnElement.previousSibling;
+    jobPosts[index].customResume = textarea.value;
+    setJobPosts(jobPosts);
+    alert("Resume saved!");
+}
+
+function saveCoverLetter(index, btnElement) {
+    const jobPosts = getJobPosts();
+    const textarea = btnElement.previousSibling;
+    jobPosts[index].customCoverLetter = textarea.value;
+    setJobPosts(jobPosts);
+    alert("Cover Letter saved!");
 }
 
 function editJobPost(index) {
@@ -161,6 +196,3 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
-
-
-
