@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", function() {
             location: document.getElementById("location").value,
             description: document.getElementById("description").value,
             skills: document.getElementById("skills").value,
+            salary: document.getElementById("salary").value, // Added this line
+            qualification: document.getElementById("qualification").value, // Added this line
             date: document.getElementById("date").value,
             link: document.getElementById("link").value,
             poc: {
@@ -100,6 +102,8 @@ function loadJobPosts() {
             <p>Location: ${job.location}</p>
             <p>Job Description: ${job.description}</p>
             <p>Skills Required: ${job.skills}</p>
+            <p>Salary: ${job.salary}</p> 
+            <p>Qualification: ${job.qualification}</p> 
             <p>Date Posted: ${job.date}</p>
             <p><a href="${job.link}" target="_blank">Link to Job</a></p>
             <button onclick="editJobPost(${index})">Edit</button>
@@ -138,6 +142,8 @@ function editJobPost(index) {
     document.getElementById("location").value = job.location;
     document.getElementById("description").value = job.description;
     document.getElementById("skills").value = job.skills;
+    document.getElementById("salary").value = job.salary; // Added this line
+    document.getElementById("qualification").value = job.qualification; // Added this line
     document.getElementById("date").value = job.date;
     document.getElementById("link").value = job.link;
     document.getElementById("editIndex").value = index;
