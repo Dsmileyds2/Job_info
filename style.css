@@ -24,6 +24,16 @@ body {
     border-radius: 3px;
 }
 
+input::placeholder {
+    color: white;
+    opacity: 0.5;
+}
+
+textarea::placeholder {
+    color: rgb(0, 0, 0);
+    opacity: 0.3;
+}
+
 #jobForm input[type="submit"] {
     background-color: #007BFF;
     color: #fff;

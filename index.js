@@ -124,12 +124,12 @@ function loadJobPosts() {
             </div>
             <div class="resume-section">
                 <strong>Custom Resume:</strong>
-                <textarea class="custom-resume">${job.customResume || ""}</textarea>
+                <textarea class="custom-resume" placeholder="Paste custome resume here...">${job.customResume || ""}</textarea>
                 <button class="save-changes" onclick="saveResume(${index}, this)">Save Resume</button>
             </div>
             <div class="coverletter-section">
                 <strong>Cover Letter:</strong>
-                <textarea class="custom-coverletter">${job.customCoverLetter || ""}</textarea>
+                <textarea class="custom-coverletter" placeholder="Paste cover letter here...">${job.customCoverLetter || ""}</textarea>
                 <button class="save-changes" onclick="saveCoverLetter(${index}, this)">Save Cover Letter</button>
             </div>
         `;
