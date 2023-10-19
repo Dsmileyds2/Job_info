@@ -157,7 +157,6 @@ function saveResume(index, btnElement) {
     const textarea = btnElement.parentElement.querySelector('textarea');
     jobPosts[index].customResume = textarea.value;
     setJobPosts(jobPosts);
-    alert("Resume saved!");
 }
 
 function saveCoverLetter(index, btnElement) {
@@ -165,7 +164,6 @@ function saveCoverLetter(index, btnElement) {
     const textarea = btnElement.parentElement.querySelector('textarea');
     jobPosts[index].customCoverLetter = textarea.value;
     setJobPosts(jobPosts);
-    alert("Cover Letter saved!");
 }
 
 function editJobPost(index) {
