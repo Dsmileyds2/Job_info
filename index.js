@@ -145,7 +145,7 @@ function loadJobPosts() {
         }
 
         jobDiv.querySelector(".apply").addEventListener("click", function () {
-            applyToThisJob(index, applyButton);
+            applyToThisJob(index, this);
         }, { once: true });
 
         jobDiv.querySelector(".add-poc").addEventListener("click", function() {
