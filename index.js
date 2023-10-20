@@ -116,7 +116,8 @@ function loadJobPosts() {
                 <button onclick="deleteJobPost(${index})">Delete</button>
                 ${showPOCButton}
                 <button class="add-poc">Add POC</button>
-                <button class="apply">Apply</button>
+                <button class="apply" data-index="${index}">Apply</button>
+
                 <div class="poc-details" hidden>
                     <strong>Name:</strong> ${job.poc ? job.poc.name : 'N/A'}<br>
                     <strong>Email:</strong> ${job.poc ? job.poc.email : 'N/A'}<br>
@@ -142,6 +143,14 @@ function loadJobPosts() {
                 const pocDetails = jobDiv.querySelector(".poc-details");
                 pocDetails.hidden = !pocDetails.hidden;
             });
+        }
+
+        const applyButton = jobDiv.querySelector(".apply");
+        if (job.applyBtn && job.applyBtn.includes('applyingToThis')) {
+            applyButton.classList.add('applyingToThis');
+        }
+        if (job.applyBtn && job.applyBtn.includes('applied')) {
+            applyButton.classList.add('applied');
         }
 
         jobDiv.querySelector(".apply").addEventListener("click", function () {
@@ -173,12 +182,22 @@ function saveCoverLetter(index, btnElement) {
 
 function applyToThisJob(index, btnElement) {
     const jobPosts = getJobPosts();
-    const applyToJob = jobPosts[index];
-    
     // Example: Send this job data to a server or perform other operations
     // sendJobApplicationToServer(applyToJob);
     
     btnElement.classList.add('applyingToThis');
+    jobPosts[index].applyBtn = btnElement.classList.value;
+    setJobPosts(jobPosts);
+}
+
+function appliedToJob(index, btnElement) {
+    const jobPosts = getJobPosts();
+    // Example: Send this job data to a server or perform other operations
+    // sendJobApplicationToServer(applyToJob);
+    btnElement.classList.add('applied');
+    btnElement.classList.remove('applyingToThis');
+    jobPosts[index].applyBtn = btnElement.classList.value;
+    setJobPosts(jobPosts);
 }
 
 
