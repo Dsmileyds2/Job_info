@@ -117,6 +117,17 @@ textarea::placeholder {
     background-color: #0056b3;
 }
 
+#jobPosts .job-posting button.applyingToThis {
+    background-color: #fff;
+    color: #007BFF;
+}
+
+
+#jobPosts .job-posting button.appied {
+    background-color: #002f61;
+    color: #fff;
+}
+
 
 /* Contact Modal */
 .modal {

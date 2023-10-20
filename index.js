@@ -116,6 +116,7 @@ function loadJobPosts() {
                 <button onclick="deleteJobPost(${index})">Delete</button>
                 ${showPOCButton}
                 <button class="add-poc">Add POC</button>
+                <button class="apply">Apply</button>
                 <div class="poc-details" hidden>
                     <strong>Name:</strong> ${job.poc ? job.poc.name : 'N/A'}<br>
                     <strong>Email:</strong> ${job.poc ? job.poc.email : 'N/A'}<br>
@@ -143,6 +144,10 @@ function loadJobPosts() {
             });
         }
 
+        jobDiv.querySelector(".apply").addEventListener("click", function () {
+            applyToThisJob(index, applyButton);
+        }, { once: true });
+
         jobDiv.querySelector(".add-poc").addEventListener("click", function() {
             modal.style.display = "block";
             currentJobIndex = index;
@@ -165,6 +170,17 @@ function saveCoverLetter(index, btnElement) {
     jobPosts[index].customCoverLetter = textarea.value;
     setJobPosts(jobPosts);
 }
+
+function applyToThisJob(index, btnElement) {
+    const jobPosts = getJobPosts();
+    const applyToJob = jobPosts[index];
+    
+    // Example: Send this job data to a server or perform other operations
+    // sendJobApplicationToServer(applyToJob);
+    
+    btnElement.classList.add('applyingToThis');
+}
+
 
 function editJobPost(index) {
     const jobPosts = getJobPosts();
