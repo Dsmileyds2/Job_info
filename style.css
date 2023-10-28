@@ -99,6 +99,7 @@ textarea::placeholder {
     border: 1px solid #ddd;
     border-radius: 3px;
     resize: none; /* prevent manual resizing */
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 .save-changes {

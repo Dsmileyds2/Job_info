@@ -87,10 +87,29 @@ function deleteJobPost(index) {
     loadJobPosts();
 }
 
+const stripMarkdown = markdownText => {
+    const strippedText = markdownText
+        .replace(/#+\s?/g, '')
+        .replace(/\*\*/g, '')
+        .replace(/\*/g, '')
+        .replace(/!\[.*?\]\(.*?\)/g, '')
+        .replace(/\[.*?\]\(.*?\)/g, '')
+        .replace(/`{3}[\s\S]*?`{3}/g, '')
+        .replace(/---/g, '');
+    return strippedText;
+};
+// Function to set up event listeners for Markdown stripping
+function setUpMarkdownStripping(textarea) {
+    textarea.addEventListener('input', function() {
+        var noMarkdown = stripMarkdown(textarea.value);
+        textarea.value = noMarkdown;
+    });
+}
+
 function loadJobPosts() {
     const jobPostsDiv = document.getElementById("jobPosts");
     const jobPosts = getJobPosts();
-
+    
     jobPostsDiv.innerHTML = "";
 
     jobPosts.forEach((job, index) => {
@@ -103,38 +122,42 @@ function loadJobPosts() {
         }
 
         jobDiv.innerHTML = `
-            <div class="job-details">
-                <h2>${job.title} at ${job.company}</h2>
-                <p>Location: ${job.location}</p>
-                <p>Job Description: ${job.description}</p>
-                <p>Skills Required: ${job.skills}</p>
-                <p>Salary: ${job.salary}</p> 
-                <p>Qualification: ${job.qualification}</p> 
-                <p>Date Posted: ${job.date}</p>
-                <p><a href="${job.link}" target="_blank">Link to Job</a></p>
-                <button onclick="editJobPost(${index})">Edit</button>
-                <button onclick="deleteJobPost(${index})">Delete</button>
-                ${showPOCButton}
-                <button class="add-poc">Add POC</button>
-                <button class="apply" data-index="${index}">Apply</button>
+    <div class="job-details">
+        <h2>${job.title} at ${job.company}</h2>
+        <p>Location: ${job.location}</p>
+        <p>Job Description: ${job.description}</p>
+        <p>Skills Required: ${job.skills}</p>
+        <p>Salary: ${job.salary}</p> 
+        <p>Qualification: ${job.qualification}</p> 
+        <p>Date Posted: ${job.date}</p>
+        <p><a href="${job.link}" target="_blank">Link to Job</a></p>
+        <button onclick="editJobPost(${index})">Edit</button>
+        <button onclick="deleteJobPost(${index})">Delete</button>
+        ${showPOCButton}
+        <button class="add-poc">Add POC</button>
+<button class="apply" data-index="${index}">Apply</button>
+        <div class="poc-details" hidden>
+            <strong>Name:</strong> ${job.poc ? job.poc.name : 'N/A'}<br>
+            <strong>Email:</strong> ${job.poc ? job.poc.email : 'N/A'}<br>
+            <strong>Phone:</strong> ${job.poc ? job.poc.phone : 'N/A'}
+        </div>
+    </div>
+    <div class="resume-section">
+        <strong>Custom Resume:</strong>
+        <textarea class="custom-resume" placeholder="Paste custom resume here...">${job.customResume || ""}</textarea>
+        <button class="save-changes" onclick="saveResume(${index}, this)">Save Resume</button>
+        <button class="download-res-txt" onclick="downloadText(this, '${job.title}', '${job.company}')">Download Resume as TXT</button>
+        <button class="download-res-pdf" onclick="downloadPDF(this, '${job.title}', '${job.company}')">Download Resume as PDF</button>
+    </div>
+    <div class="coverletter-section">
+        <strong>Cover Letter:</strong>
+        <textarea class="custom-coverletter" placeholder="Paste cover letter here...">${job.customCoverLetter || ""}</textarea>
+        <button class="save-changes" onclick="saveCoverLetter(${index}, this)">Save Cover Letter</button>
+        <button class="download-res-txt" onclick="downloadText(this, '${job.title}', '${job.company}')">Download Resume as TXT</button>
+        <button class="download-res-pdf" onclick="downloadPDF(this, '${job.title}', '${job.company}')">Download Resume as PDF</button>
+    </div>
+`;
 
-                <div class="poc-details" hidden>
-                    <strong>Name:</strong> ${job.poc ? job.poc.name : 'N/A'}<br>
-                    <strong>Email:</strong> ${job.poc ? job.poc.email : 'N/A'}<br>
-                    <strong>Phone:</strong> ${job.poc ? job.poc.phone : 'N/A'}
-                </div>
-            </div>
-            <div class="resume-section">
-                <strong>Custom Resume:</strong>
-                <textarea class="custom-resume" placeholder="Paste custome resume here...">${job.customResume || ""}</textarea>
-                <button class="save-changes" onclick="saveResume(${index}, this)">Save Resume</button>
-            </div>
-            <div class="coverletter-section">
-                <strong>Cover Letter:</strong>
-                <textarea class="custom-coverletter" placeholder="Paste cover letter here...">${job.customCoverLetter || ""}</textarea>
-                <button class="save-changes" onclick="saveCoverLetter(${index}, this)">Save Cover Letter</button>
-            </div>
-        `;
 
         jobPostsDiv.appendChild(jobDiv);
 
@@ -163,6 +186,68 @@ function loadJobPosts() {
         });
     });
 }
+
+const downloadText = (btnElement, jobTitle, jobCompany) => {
+    const customresumeTextarea = btnElement.parentElement.querySelector('.custom-resume');
+    const coverLetterTextarea = btnElement.parentElement.querySelector('.custom-coverletter');
+    let type;
+    let text;
+    if (customresumeTextarea) {
+        type = 'Resume';
+        console.log('type', type);
+        text = customresumeTextarea.value
+    } else if (coverLetterTextarea) {
+        type = 'CoverLetter';
+        console.log('type', type);
+        text = coverLetterTextarea.value;
+    } else {
+        console.log('ERROR: prevTextArea', customresumeTextarea || coverLetterTextarea, 'Type:', typeof(customresumeTextarea || coverLetterTextarea))// Unexpected type, exit function
+        return;
+    }
+    
+    const strippedText = stripMarkdown(text);
+    const blob = new Blob([strippedText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${jobTitle}_${jobCompany}_Custom${type}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+};
+
+
+function downloadPDF(btnElement, jobTitle, jobCompany) {
+    const customresumeTextarea = btnElement.parentElement.querySelector('.custom-resume');
+    const coverLetterTextarea = btnElement.parentElement.querySelector('.custom-coverletter');
+    let type;
+    let text;
+    if (customresumeTextarea) {
+        type = 'Resume';
+        console.log('type', type);
+    } else if (coverLetterTextarea) {
+        type = 'CoverLetter';
+        console.log('type', type);
+    } else {
+        console.log('ERROR: prevTextArea', customresumeTextarea || coverLetterTextarea, 'Type:', typeof(customresumeTextarea || coverLetterTextarea))// Unexpected type, exit function
+        return;
+    }
+
+    const textArea = customresumeTextarea ? customresumeTextarea : coverLetterTextarea;
+
+    html2pdf(textArea, {
+        margin: [0, 0],  
+        filename: `${jobTitle}_${jobCompany}_Custom${type}.pdf`,
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { 
+            scale: 5, x: 500, y: 400, 
+            width: 1000, height: 1300, 
+            logging: true, dpi: 600, 
+            letterRendering: true 
+        },
+        jsPDF: { unit: 'mm', format: 'letter', orientation: 'portrait' }
+    });
+}
+
 
 
 
@@ -229,3 +314,58 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
+
+
+// const textInput = document.querySelector('input#text-input-what');
+// const postText = 'Im_______INTHERE';
+
+// // function insertAfterEquals(str, textToInsert) {
+// //     const index = str.indexOf('=');
+// //     if (index === -1) {
+// //         return str;  // '=' not found in the string
+// //     }
+// //     return str.slice(0, index + 1) + textToInsert + str.slice(index + 1);
+// // } 
+
+
+// function setText (input, text) {
+// input.focus();
+// // const getForm = document.querySelector('form#jobsearch');
+// // const getAction = getForm.getAttribute('action');
+// // console.log(getAction);
+// console.log(text);
+// // const setAction = insertAfterEquals(getAction, text);
+// // console.log(setAction); 
+// // humanType(input, text, function() {
+// //     console.log('Finished typing!');
+// // });
+// humanType(input, text, function() {
+//     console.log('Finished typing!');
+// });
+// input.setAttribute('value', text);
+// //input.value = text;
+// //getForm.setAttribute('action', setAction);
+// }
+// //console.log(setText(textInput, postText));
+
+// setText(textInput, postText);
+
+// function humanType(element, str, callback) {
+//     let index = 0;
+
+//     function typeNextChar() {
+//         if (index < str.length) {
+//             element.value += str[index++];
+//             setTimeout(typeNextChar, getRandomDelay());  // Call itself to type the next character after a delay
+//         } else if (callback) {
+//             callback();
+//         }
+//     }
+
+//     function getRandomDelay() {
+//         // Get a random delay between 100 and 200 milliseconds
+//         return Math.random() * 100 + 100;
+//     }
+
+//     typeNextChar();  // Start typing
+//}
