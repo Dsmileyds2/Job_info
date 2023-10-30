@@ -89,22 +89,34 @@ function deleteJobPost(index) {
 
 const stripMarkdown = markdownText => {
     const strippedText = markdownText
-        .replace(/#+\s?/g, '')
+        .replace(/^#+\s?/gm, '')
         .replace(/\*\*/g, '')
         .replace(/\*/g, '')
         .replace(/!\[.*?\]\(.*?\)/g, '')
         .replace(/\[.*?\]\(.*?\)/g, '')
         .replace(/`{3}[\s\S]*?`{3}/g, '')
-        .replace(/---/g, '');
+        .replace(/---/g, '')
+        // Added: Remove 'Customized Resume:' & subsequent spaces until the first line of text
+        .replace(/Customized Resume:\s*/g, '')
+        // Added: Remove '[COVER LETTER]:' & subsequent spaces until the first line of text
+        .replace(/\[COVER LETTER\]:\s*/g, '');
     return strippedText;
 };
+
 // Function to set up event listeners for Markdown stripping
 function setUpMarkdownStripping(textarea) {
-    textarea.addEventListener('input', function() {
+    textarea.addEventListener('paste', handleInputChange);
+    textarea.addEventListener('input', function(event) {
+        setTimeout(handleInputChange, 1);
+    });
+
+    function handleInputChange() {
         var noMarkdown = stripMarkdown(textarea.value);
         textarea.value = noMarkdown;
-    });
+    }
 }
+
+
 
 function loadJobPosts() {
     const jobPostsDiv = document.getElementById("jobPosts");
@@ -144,14 +156,14 @@ function loadJobPosts() {
     </div>
     <div class="resume-section">
         <strong>Custom Resume:</strong>
-        <textarea class="custom-resume" placeholder="Paste custom resume here...">${job.customResume || ""}</textarea>
+        <textarea type="text" class="custom-resume" oninput="setUpMarkdownStripping(this)" placeholder="Paste custom resume here...">${job.customResume || ""}</textarea>
         <button class="save-changes" onclick="saveResume(${index}, this)">Save Resume</button>
         <button class="download-res-txt" onclick="downloadText(this, '${job.title}', '${job.company}')">Download Resume as TXT</button>
         <button class="download-res-pdf" onclick="downloadPDF(this, '${job.title}', '${job.company}')">Download Resume as PDF</button>
     </div>
     <div class="coverletter-section">
         <strong>Cover Letter:</strong>
-        <textarea class="custom-coverletter" placeholder="Paste cover letter here...">${job.customCoverLetter || ""}</textarea>
+        <textarea type="text" class="custom-coverletter" oninput="setUpMarkdownStripping(this)" placeholder="Paste cover letter here...">${job.customCoverLetter || ""}</textarea>
         <button class="save-changes" onclick="saveCoverLetter(${index}, this)">Save Cover Letter</button>
         <button class="download-res-txt" onclick="downloadText(this, '${job.title}', '${job.company}')">Download Resume as TXT</button>
         <button class="download-res-pdf" onclick="downloadPDF(this, '${job.title}', '${job.company}')">Download Resume as PDF</button>
@@ -314,58 +326,3 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 }
-
-
-// const textInput = document.querySelector('input#text-input-what');
-// const postText = 'Im_______INTHERE';
-
-// // function insertAfterEquals(str, textToInsert) {
-// //     const index = str.indexOf('=');
-// //     if (index === -1) {
-// //         return str;  // '=' not found in the string
-// //     }
-// //     return str.slice(0, index + 1) + textToInsert + str.slice(index + 1);
-// // } 
-
-
-// function setText (input, text) {
-// input.focus();
-// // const getForm = document.querySelector('form#jobsearch');
-// // const getAction = getForm.getAttribute('action');
-// // console.log(getAction);
-// console.log(text);
-// // const setAction = insertAfterEquals(getAction, text);
-// // console.log(setAction); 
-// // humanType(input, text, function() {
-// //     console.log('Finished typing!');
-// // });
-// humanType(input, text, function() {
-//     console.log('Finished typing!');
-// });
-// input.setAttribute('value', text);
-// //input.value = text;
-// //getForm.setAttribute('action', setAction);
-// }
-// //console.log(setText(textInput, postText));
-
-// setText(textInput, postText);
-
-// function humanType(element, str, callback) {
-//     let index = 0;
-
-//     function typeNextChar() {
-//         if (index < str.length) {
-//             element.value += str[index++];
-//             setTimeout(typeNextChar, getRandomDelay());  // Call itself to type the next character after a delay
-//         } else if (callback) {
-//             callback();
-//         }
-//     }
-
-//     function getRandomDelay() {
-//         // Get a random delay between 100 and 200 milliseconds
-//         return Math.random() * 100 + 100;
-//     }
-
-//     typeNextChar();  // Start typing
-//}
