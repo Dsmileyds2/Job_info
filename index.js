@@ -105,9 +105,11 @@ const stripMarkdown = markdownText => {
 
 // Function to set up event listeners for Markdown stripping
 function setUpMarkdownStripping(textarea) {
-    textarea.addEventListener('paste', handleInputChange);
+    textarea.addEventListener('focus', handleInputChange);
     textarea.addEventListener('input', function(event) {
-        setTimeout(handleInputChange, 1);
+        if (event.inputType === 'insertFromPaste' || event.inputType === 'insertText' || event.inputType === 'deleteContentBackward') {
+            textarea.value = handleInputChange();
+          }
     });
 
     function handleInputChange() {
