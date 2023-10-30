@@ -103,20 +103,12 @@ const stripMarkdown = markdownText => {
     return strippedText;
 };
 
-// Function to set up event listeners for Markdown stripping
-function setUpMarkdownStripping(textarea) {
-    textarea.addEventListener('focus', handleInputChange);
-    textarea.addEventListener('input', function(event) {
-        if (event.inputType === 'insertFromPaste' || event.inputType === 'insertText' || event.inputType === 'deleteContentBackward') {
-            textarea.value = handleInputChange();
-          }
-    });
-
-    function handleInputChange() {
-        var noMarkdown = stripMarkdown(textarea.value);
-        textarea.value = noMarkdown;
-    }
+function handleInputChange(textarea) {
+    const noMarkdown = stripMarkdown(textarea.value);
+    textarea.value = noMarkdown;
 }
+
+
 
 
 
@@ -149,7 +141,7 @@ function loadJobPosts() {
         <button onclick="deleteJobPost(${index})">Delete</button>
         ${showPOCButton}
         <button class="add-poc">Add POC</button>
-<button class="apply" data-index="${index}">Apply</button>
+        <button class="apply" data-index="${index}">Apply</button>
         <div class="poc-details" hidden>
             <strong>Name:</strong> ${job.poc ? job.poc.name : 'N/A'}<br>
             <strong>Email:</strong> ${job.poc ? job.poc.email : 'N/A'}<br>
@@ -158,14 +150,14 @@ function loadJobPosts() {
     </div>
     <div class="resume-section">
         <strong>Custom Resume:</strong>
-        <textarea type="text" class="custom-resume" oninput="setUpMarkdownStripping(this)" placeholder="Paste custom resume here...">${job.customResume || ""}</textarea>
+        <textarea type="text" class="custom-resume" onpaste="handleInputChange(this)" oninput="handleInputChange(this)" onfocus="handleInputChange(this)" placeholder="Paste custom resume here...">${job.customResume || ""}</textarea>
         <button class="save-changes" onclick="saveResume(${index}, this)">Save Resume</button>
         <button class="download-res-txt" onclick="downloadText(this, '${job.title}', '${job.company}')">Download Resume as TXT</button>
         <button class="download-res-pdf" onclick="downloadPDF(this, '${job.title}', '${job.company}')">Download Resume as PDF</button>
     </div>
     <div class="coverletter-section">
         <strong>Cover Letter:</strong>
-        <textarea type="text" class="custom-coverletter" oninput="setUpMarkdownStripping(this)" placeholder="Paste cover letter here...">${job.customCoverLetter || ""}</textarea>
+        <textarea type="text" class="custom-coverletter" onpaste="handleInputChange(this)" oninput="handleInputChange(this)" onfocus="handleInputChange(this)" placeholder="Paste cover letter here...">${job.customCoverLetter || ""}</textarea>
         <button class="save-changes" onclick="saveCoverLetter(${index}, this)">Save Cover Letter</button>
         <button class="download-res-txt" onclick="downloadText(this, '${job.title}', '${job.company}')">Download Resume as TXT</button>
         <button class="download-res-pdf" onclick="downloadPDF(this, '${job.title}', '${job.company}')">Download Resume as PDF</button>
