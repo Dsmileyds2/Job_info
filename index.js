@@ -153,14 +153,14 @@ function loadJobPosts() {
         <textarea type="text" class="custom-resume" onpaste="handleInputChange(this)" oninput="handleInputChange(this)" onfocus="handleInputChange(this)" placeholder="Paste custom resume here...">${job.customResume || ""}</textarea>
         <button class="save-changes" onclick="saveResume(${index}, this)">Save Resume</button>
         <button class="download-res-txt" onclick="downloadText(this, '${job.title}', '${job.company}')">Download Resume as TXT</button>
-        <button class="download-res-pdf" onclick="downloadDOCX(this, '${job.title}', '${job.company}')">Download Resume as DOCX</button>
+        <button class="download-res-docx" onclick="downloadDOCX(this, '${job.title}', '${job.company}')">Download Resume as DOCX</button>
     </div>
     <div class="coverletter-section">
         <strong>Cover Letter:</strong>
         <textarea type="text" class="custom-coverletter" onpaste="handleInputChange(this)" oninput="handleInputChange(this)" onfocus="handleInputChange(this)" placeholder="Paste cover letter here...">${job.customCoverLetter || ""}</textarea>
         <button class="save-changes" onclick="saveCoverLetter(${index}, this)">Save Cover Letter</button>
         <button class="download-res-txt" onclick="downloadText(this, '${job.title}', '${job.company}')">Download Cover Letter as TXT</button>
-        <button class="download-res-pdf" onclick="downloadDOCX(this, '${job.title}', '${job.company}')">Download Cover Letter as DOCX</button>
+        <button class="download-res-docx" onclick="downloadDOCX(this, '${job.title}', '${job.company}')">Download Cover Letter as DOCX</button>
     </div>
 `;
 
@@ -238,12 +238,12 @@ function downloadDOCX(btnElement, jobTitle, jobCompany) {
     }
 
     const textArea = customresumeTextarea ? customresumeTextarea : coverLetterTextarea;
+    const textLines = textArea.value.split('\n'); // Split the text area content into lines
+
     const doc = new docx.Document({
         sections: [{
             properties: {},
-            children: [
-                new docx.Paragraph(textArea.value),
-            ],
+            children: textLines.map(line => new docx.Paragraph(line)), // Create a new paragraph for each line
         }],
     });
 
@@ -252,6 +252,7 @@ function downloadDOCX(btnElement, jobTitle, jobCompany) {
         saveAs(blob, `${jobTitle}_${jobCompany}_Custom${type}.docx`);
     });
 }
+
 
 // html2pdf(textArea, {
     //     margin: [1, 1],  
